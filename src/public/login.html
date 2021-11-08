@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>login</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+<h1>Log in</h1>
+<form name="LogIn" action="/login" method="post" enctype="application/x-www-form-urlencoded">
+    <input type="text" name="username" placeholder="Username" required><br><br>
+    <input type="password" name="password" placeholder="Password" required><br><br>
+    <input type="submit" value="Send">
+</form>
+</body>
+
+<script>
+    async function logInn(userName, pass) {
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: userName,
+                password: pass
+            })
+        });
+        console.log('response', response)
+        if (response.ok === true) {
+            const user = await response.json();
+            console.log('loggggg', user)
+        }
+    }
+
+    document.forms["LogIn"].addEventListener("submit", e => {
+        e.preventDefault();
+        const form = document.forms["LogIn"];
+        const name = form.elements["username"].value;
+        const pass = form.elements["password"].value;
+        logInn(name, pass)
+
+    });
+</script>
+</html>
