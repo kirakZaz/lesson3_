@@ -8,14 +8,51 @@ const userRoutes = express.Router({ mergeParams: true })
 
 /**
  * @swagger
+ * tags:
+ *   name: Users
+ *   description: API to manage your users.
+ * components:
+ *    schemas:
+ *        Book:
+ *            type: object
+ * required:
+ *    - username
+ *    - email
+ *    - token
+ * properties:
+ *   id:
+ *   type: integer
+ * description: The auto-generated id of the user.
+ *   username:
+ *   type: string
+ * description: The name of your user.
+ *   email:
+ * type: string
+ * description: The email of your user.
+ *   token:
+ *   type: boolean
+ * description: The token of your user.
+ *    example:
+ * title: The Pragmatic Programmer
+ * author: Andy Hunt / Dave Thomas
+ * finished: true
+ */
+
+/**
+ * @swagger
  * /Users:
  *   get:
- *     description: Get all User
+ *     summary: Returns all users
+ *     tags: [Users]
  *     responses:
  *       200:
- *         description: Success
- *
+ *         description: the list of the users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  */
+
 userRoutes.get("/api/users", (req, res) => {
     const content = fs.readFileSync(path.join(__dirname, "../users.json"));
     const users = JSON.parse(content.toString());
@@ -24,6 +61,7 @@ userRoutes.get("/api/users", (req, res) => {
 
 /**
  * @swagger
+ * /Users:
  * /api/users/{id}:
  *   get:
  *     tags:
@@ -41,25 +79,24 @@ userRoutes.get("/api/users", (req, res) => {
  *       200:
  *         description: A single user
  *         schema:
- *           $ref: '#/definitions/User'
+ *               type: array
  */
 userRoutes.get("/api/users/:id", (req, res) => {
     const id = req.params.id; // получаем id
     const content = fs.readFileSync(path.join(__dirname, "../users.json"));
     const users = JSON.parse(content.toString());
     let user = null;
-    // находим в массиве пользователя по id
+
     for(let i=0; i<users.length; i++){
         if(users[i].id==id){
             user = users[i];
             break;
         }
     }
-    // отправляем пользователя
-    if(user){
+
+    if (user){
         res.send(user);
-    }
-    else{
+    } else{
         res.status(404).send();
     }
 });
@@ -68,9 +105,10 @@ userRoutes.get("/api/users/:id", (req, res) => {
  * @swagger
  * /Users:
  *   post:
- *     description: Create an User
- *     parameters:
- *     - name: UserName
+ *      summary: Create user
+ *      description: Create an User
+*       parameters:
+ *      - name: UserName
  *       description: Create an new user
  *       in: formData
  *       required: true
@@ -107,17 +145,15 @@ userRoutes.post("/api/users", jsonParser, (req, res) => {
  * @swagger
  * /Users:
  *   put:
- *     description: Create an User
- *     parameters:
- *     - name: UserName
- *       description: Create an new user
- *       in: formData
- *       required: true
- *       type: String
+ *     summary: Returns all users
+ *     tags: [Users]
  *     responses:
- *       201:
- *         description: updated
- *
+ *       200:
+ *         description: the list of the users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
  */
 userRoutes.put("/api/users", jsonParser, (req, res) => {
     if(!req.body) return res.sendStatus(400);
@@ -156,7 +192,9 @@ userRoutes.put("/api/users", jsonParser, (req, res) => {
 /**
  * @swagger
  * /Users:
+ *  /api/users/{id}:
  *   delete:
+ *   summary: Delete user
  *     description: Create an Users
  *     parameters:
  *     - name: UserName
@@ -198,25 +236,9 @@ userRoutes.delete("/api/users/:id", (req, res) => {
 });
 
 
-/**
- * @swagger
- * /api/users:
- *   get:
- *     tags:
- *       - Users
- *     description: Returns all users
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: An array of users
- *         schema:
- *           $ref: '#/definitions/User'
- */
-
-
 userRoutes.get("/users", (request, response) => {
     response.sendFile('users.html', { root: path.join(__dirname, '../public') })
 });
 
 export default userRoutes
+

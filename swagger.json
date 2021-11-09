@@ -1,12 +1,17 @@
 {
   "swagger": "2.0",
   "info": {
+    "title": "Express API for JSONPlaceholder",
     "version": "1.0.0",
-    "title": "Yet Another Node.js Blogg Application API",
-    "description": "Yet Another Node.js Blogg Application API",
+    "description":
+    "This is a REST API application made with Express. It retrieves data from JSONPlaceholder.",
     "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
+      "name": "Licensed Under MIT",
+      "url": "https://spdx.org/licenses/MIT.html"
+    },
+    "contact": {
+      "name": "Kira Za",
+      "email": "kirka.zaz\"gmail.com"
     }
   },
   "host": "localhost:5000",
@@ -14,24 +19,19 @@
   "tags": [
     {
       "name": "Users",
-      "description": "API for users in the system"
+      "description": "User actions"
     }
   ],
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "schemes": ["http", "https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
-    "/users": {
-      "post": {
+    "/api/users": {
+      "post":{
         "tags": [
           "Users"
         ],
+        "summary": "Create user",
         "description": "Create new user in system",
         "parameters": [
           {
@@ -39,7 +39,7 @@
             "in": "body",
             "description": "User that we want to create",
             "schema": {
-              "$ref": "#/definitions/User"
+              "type": "array"
             }
           }
         ],
@@ -50,7 +50,7 @@
           "200": {
             "description": "New user is created",
             "schema": {
-              "$ref": "#/definitions/User"
+              "type": "array"
             }
           }
         }
@@ -64,105 +64,69 @@
           "200": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/Users"
-            }
-          }
-        }
-      }
-    },
-    "/users/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID of user that we want to find",
-          "type": "string"
-        }
-      ],
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get user with given ID",
-        "responses": {
-          "200": {
-            "description": "User is found",
-            "schema": {
-              "$ref": "#/definitions/User"
+              "type": "array"
             }
           }
         }
       },
-      "delete": {
-        "summary": "Delete user with given ID",
+      "put":{
         "tags": [
           "Users"
         ],
-        "responses": {
-          "200": {
-            "description": "User is deleted",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update user with give ID",
-        "tags": [
-          "Users"
-        ],
+        "summary": "Update user",
+        "description": "Update new user in system",
         "parameters": [
           {
             "name": "user",
             "in": "body",
-            "description": "User with new values of properties",
+            "description": "User that we want to create",
             "schema": {
-              "$ref": "#/definitions/User"
+              "type": "array"
             }
           }
         ],
+        "produces": [
+          "application/json"
+        ],
         "responses": {
           "200": {
-            "description": "User is updated",
+            "description": "User was updated",
             "schema": {
-              "$ref": "#/definitions/User"
+              "type": "array"
             }
           }
         }
       }
-    }
-  },
-  "definitions": {
-    "User": {
-      "required": [
-        "email",
-        "_id"
-      ],
-      "properties": {
-        "id": {
-          "type": "string",
-          "uniqueItems": true
-        },
-        "email": {
-          "type": "string",
-          "uniqueItems": true
-        },
-        "username": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get one user",
+        "responses": {
+        "200": {
+           "description": "OK",
+           "schema": {
+             "type": "array"
+           }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete one user",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array"
+            }
+          }
         }
       }
-    },
-    "Users": {
-      "type": "array",
-      "$ref": "#/definitions/User"
     }
   }
 }
