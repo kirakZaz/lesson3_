@@ -8,8 +8,8 @@ import swaggerDocument from '../swagger.json';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
 import userRoutes from "./api/user";
+import tokenRoutes from "./api/tokens";
 import HandlerGenerator from './api/login'
-import { middleware } from './api/login'
 
 
 // Starting point of the server
@@ -36,16 +36,14 @@ function main () {
     app.use(bodyParser.urlencoded({ extended: true }));
 
     app.use('/', userRoutes)
+    app.use('/', tokenRoutes)
 
 
     // Routes & Handlers
 
-    app.post('/', handlers.login);
+    app.post('/login', handlers.login);
     app.get("/", function (request, response) {
         response.sendFile(__dirname + "/public/login.html");
-    });
-    userRoutes.get('/users', middleware, (request, response) => {
-        response.sendFile('users.html', { root: path.join(__dirname, '../public') })
     });
 
     app.listen(5000, 'localhost', () => {

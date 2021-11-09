@@ -6,37 +6,6 @@ const jsonParser = express.json();
 
 const userRoutes = express.Router({ mergeParams: true })
 
-/**
- * @swagger
- * tags:
- *   name: Users
- *   description: API to manage your users.
- * components:
- *    schemas:
- *        Book:
- *            type: object
- * required:
- *    - username
- *    - email
- *    - token
- * properties:
- *   id:
- *   type: integer
- * description: The auto-generated id of the user.
- *   username:
- *   type: string
- * description: The name of your user.
- *   email:
- * type: string
- * description: The email of your user.
- *   token:
- *   type: boolean
- * description: The token of your user.
- *    example:
- * title: The Pragmatic Programmer
- * author: Andy Hunt / Dave Thomas
- * finished: true
- */
 
 /**
  * @swagger
@@ -54,7 +23,7 @@ const userRoutes = express.Router({ mergeParams: true })
  */
 
 userRoutes.get("/api/users", (req, res) => {
-    const content = fs.readFileSync(path.join(__dirname, "../users.json"));
+    const content = fs.readFileSync(path.join(__dirname, "../../users.json"));
     const users = JSON.parse(content.toString());
     res.send(users);
 });
@@ -83,7 +52,7 @@ userRoutes.get("/api/users", (req, res) => {
  */
 userRoutes.get("/api/users/:id", (req, res) => {
     const id = req.params.id; // получаем id
-    const content = fs.readFileSync(path.join(__dirname, "../users.json"));
+    const content = fs.readFileSync(path.join(__dirname, "../../users.json"));
     const users = JSON.parse(content.toString());
     let user = null;
 
@@ -128,16 +97,18 @@ userRoutes.post("/api/users", jsonParser, (req, res) => {
 
     let user = {id: userId, username: userName, email: userEmail, role: userRole};
 
-    let data = fs.readFileSync(path.join(__dirname, "../users.json"));
+    let data = fs.readFileSync(path.join(__dirname, "../../users.json"));
     let dataNoBuff = data.toString()
     let users = JSON.parse(dataNoBuff);
 
+    console.log('users',users)
+    console.log('user',user)
     // добавляем пользователя в массив
     users.push(user);
     dataNoBuff = JSON.stringify(users);
 
     // перезаписываем файл с новыми данными
-    fs.writeFileSync('../users.json', dataNoBuff);
+    fs.writeFileSync('./users.json', dataNoBuff);
     res.send(user);
 });
 
@@ -163,7 +134,7 @@ userRoutes.put("/api/users", jsonParser, (req, res) => {
     const userRole = req.body.role;
     const userId = req.body.id;
 
-    const dataBuff = fs.readFileSync(path.join(__dirname, "../users.json"));
+    const dataBuff = fs.readFileSync(path.join(__dirname, "../../users.json"));
     let data = dataBuff.toString()
 
     const users = JSON.parse(data);
@@ -181,7 +152,7 @@ userRoutes.put("/api/users", jsonParser, (req, res) => {
         user.role = userRole;
 
         data = JSON.stringify(users);
-        fs.writeFileSync("../users.json", data);
+        fs.writeFileSync("./users.json", data);
         res.send(user);
     }
     else{
@@ -209,8 +180,7 @@ userRoutes.put("/api/users", jsonParser, (req, res) => {
  */
 userRoutes.delete("/api/users/:id", (req, res) => {
     const id = req.params.id;
-    // let data = fs.readFileSync('users.json', "utf8");
-    const dataBuff = fs.readFileSync(path.join(__dirname, "../users.json"));
+    const dataBuff = fs.readFileSync(path.join(__dirname, "../../users.json"));
     let data = dataBuff.toString()
     let users = JSON.parse(data.toString());
     let index = -1;
