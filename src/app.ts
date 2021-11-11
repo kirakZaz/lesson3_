@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import path from "path";
 import morgan from "morgan";
 import swaggerUi from 'swagger-ui-express';
-import * as sequelize from 'sequelize'
+import { Sequelize, DataTypes } from 'sequelize';
 
 import swaggerDocument from '../swagger.json';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -20,23 +20,30 @@ function main () {
     let handlers = new HandlerGenerator();
 
     const port = process.env.PORT || 5000;
+    app.set('view engine', 'html')
 
+    const sequelize = new Sequelize('postgres://postgres:robopass@localhost:5432/postgres')
 
-    const dbConfig = new sequelize.Sequelize('robo-node', 'user1', 'sa', {
-        host: 'localhost',
-        dialect: 'mysql'
+    sequelize.authenticate().then(() => {
+        console.log('Connection has been established successfully.');
+    }).catch(err => {
+        console.error('Unable to connect to the database:', err);
     });
-    const connect = async () => {
-        try {
-            await dbConfig.authenticate();
-            console.log('Connection has been established successfully.');
-        } catch (error) {
-            console.error('Unable to connect to the database:', error);
-        }
-    }
-    connect()
-        .then(r => console.log('db connected ', r))
-        .catch((err) => console.log('error db connection', err))
+
+//     const User = sequelize.define('user', {
+//         // attributes
+//         firstName: {
+//             type: Sequelize.STRING,
+//             allowNull: false
+//         },
+//         lastName: {
+//             type: Sequelize.STRING
+//             // allowNull defaults to true
+//         }
+//     }, {
+// // options
+//     });
+
     app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }))
 
     app.use(bodyParser.json());
