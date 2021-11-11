@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import path from "path";
 import morgan from "morgan";
 import swaggerUi from 'swagger-ui-express';
+import * as sequelize from 'sequelize'
 
 import swaggerDocument from '../swagger.json';
 import { createProxyMiddleware } from 'http-proxy-middleware';
@@ -20,6 +21,22 @@ function main () {
 
     const port = process.env.PORT || 5000;
 
+
+    const dbConfig = new sequelize.Sequelize('robo-node', 'user1', 'sa', {
+        host: 'localhost',
+        dialect: 'mysql'
+    });
+    const connect = async () => {
+        try {
+            await dbConfig.authenticate();
+            console.log('Connection has been established successfully.');
+        } catch (error) {
+            console.error('Unable to connect to the database:', error);
+        }
+    }
+    connect()
+        .then(r => console.log('db connected ', r))
+        .catch((err) => console.log('error db connection', err))
     app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }))
 
     app.use(bodyParser.json());
